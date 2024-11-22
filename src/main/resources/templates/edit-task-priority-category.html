@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Редактировать задачу</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Редактировать задачу</h1>
+<form th:action="@{/tasks/edit/{id}(id=${task.id})}" th:object="${task}" method="post">
+    <label for="priority">Приоритет:</label>
+    <select id="priority" th:field="*{priority}" required>
+        <option value="HIGH">Высокий</option>
+        <option value="MEDIUM">Средний</option>
+        <option value="LOW">Низкий</option>
+    </select>
+    <br>
+
+    <label for="category">Категория:</label>
+    <select id="category" th:field="*{category.id}" required>
+        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+    </select>
+    <br>
+
+    <button type="submit" class="btn-primary">Сохранить</button>
+</form>
+<a th:href="@{/tasks}">Вернуться к задачам</a>
+</body>
+</html>

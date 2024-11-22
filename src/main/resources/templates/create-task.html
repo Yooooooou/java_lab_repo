@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Добавить задачу</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script>
+        // Скрипт для отображения плавающего окна
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'floating-error';
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+
+            // Автоматическое скрытие окна через 3 секунды
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+    </script>
+    <style>
+        /* Стили для плавающего окна */
+        .floating-error {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<h1>Добавить задачу</h1>
+<form th:action="@{/tasks/create}" th:object="${task}" method="post">
+    <label for="title">Название:</label>
+    <input type="text" id="title" th:field="*{title}" placeholder="Введите название задачи" required>
+    <br>
+    <div th:if="${#fields.hasErrors('title')}" class="error-message">
+        <p th:each="err : ${#fields.errors('title')}" th:text="${err}"></p>
+    </div>
+
+    <label for="description">Описание:</label>
+    <textarea id="description" th:field="*{description}" placeholder="Введите описание задачи" required></textarea>
+    <br>
+    <div th:if="${#fields.hasErrors('description')}" class="error-message">
+        <p th:each="err : ${#fields.errors('description')}" th:text="${err}"></p>
+    </div>
+
+    <label for="priority">Приоритет:</label>
+    <select id="priority" th:field="*{priority}" required>
+        <option value="" disabled selected>Выберите приоритет</option>
+        <option value="HIGH">Высокий</option>
+        <option value="MEDIUM">Средний</option>
+        <option value="LOW">Низкий</option>
+    </select>
+    <br>
+    <div th:if="${#fields.hasErrors('priority')}" class="error-message">
+        <p th:each="err : ${#fields.errors('priority')}" th:text="${err}"></p>
+    </div>
+
+    <label for="category">Категория:</label>
+    <select id="category" th:field="*{category.id}" required>
+        <option value="" disabled selected>Выберите категорию</option>
+        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+    </select>
+    <br>
+    <div th:if="${#fields.hasErrors('category')}" class="error-message">
+        <p th:each="err : ${#fields.errors('category')}" th:text="${err}"></p>
+    </div>
+
+    <label for="deadline">Дедлайн:</label>
+    <input type="datetime-local" id="deadline" th:field="*{deadline}" required>
+    <br>
+    <div th:if="${#fields.hasErrors('deadline')}" class="error-message">
+        <p th:each="err : ${#fields.errors('deadline')}" th:text="${err}"></p>
+    </div>
+
+    <button type="submit" class="btn-primary">Сохранить</button>
+</form>
+
+<a th:href="@{/tasks}">Вернуться к задачам</a>
+<script th:if="${errorMessage != null}">
+    showError([[${errorMessage}]]);
+</script>
+</body>
+</html>
