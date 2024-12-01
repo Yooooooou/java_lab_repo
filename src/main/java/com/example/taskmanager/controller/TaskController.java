@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -54,18 +55,32 @@ public class TaskController {
                              @Valid @ModelAttribute("task") Task task,
                              BindingResult result,
                              Model model) {
+        if (user == null) {
+            model.addAttribute("error", "Пользователь не найден.");
+            return "create-task";
+        }
+
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
             return "create-task";
         }
+
+        // Установка даты создания, если не установлено
+        if (task.getCreatedAt() == null) {
+            task.setCreatedAt(LocalDateTime.now());
+        }
+
+        // Проверка дедлайна
         if (task.getDeadline() != null && task.getDeadline().isBefore(task.getCreatedAt())) {
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("errorMessage", "Дедлайн не может быть раньше времени создания задачи.");
             return "create-task";
         }
 
-        if (user == null) {
-            model.addAttribute("error", "Пользователь не найден.");
+        // Проверка категории
+        if (task.getCategory() == null) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("errorMessage", "Категория задачи должна быть указана.");
             return "create-task";
         }
 
