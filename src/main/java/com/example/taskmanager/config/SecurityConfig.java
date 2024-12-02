@@ -21,7 +21,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Открытые маршруты
                         .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
+                        // Только для администратора
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Все остальные маршруты требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

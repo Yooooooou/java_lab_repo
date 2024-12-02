@@ -35,4 +35,7 @@ public class TaskService {
     public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
     }
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
 }
